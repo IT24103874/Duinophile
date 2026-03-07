@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Courses</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=ADLaM+Display&family=Afacad:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div th:replace="~{common :: loggedInNav}"></div>
+<div class="myCourses" style="margin-left: 50px">
+    <h1>My courses</h1>
+    <br>
+    <a th:href="@{/createCourse}" class="btn btn-success" role="button" style="all: unset; color: white; background-color: #072AC8; padding: 10px; border-radius: 13px">
+        Create Course
+    </a>
+</div>
+<br>
+<br>
+<div class="findCourses" style="margin-left: 50px; display: flex; flex-direction: row">
+    <div th:each="course : ${courses}" style="width: 200px; background-color: #00B521; padding: 15px; border-radius: 13px; margin-right: 10px">
+        <h3 th:text="${course.name}">Course name</h3>
+        <p th:text="${course.description}">Course Description</p>
+        <br>
+        <a th:href="@{/course/{id}(id=${course.id})}" role="button" style="all: unset; color: #00B521; background-color: white; padding: 5px">
+            Explore course...
+        </a>
+    </div>
+</div>
+<div th:replace="~{common :: chatbot}"></div>
+</body>
+</html>

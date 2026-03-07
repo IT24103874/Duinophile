@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Course</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=ADLaM+Display&family=Afacad:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+<div th:replace="~{common :: loggedInNav}"></div>
+<div class="createCoursePageContent" style="display: flex; justify-content: space-between">
+    <div class="createCourseForm" style="margin-left: 50px;">
+        <h1 class="headingFont" style="margin-bottom: 20px;">Create Course</h1>
+        <form method="post" th:action="@{/AddCourseToDataBase}" class="normalFont">
+            <label for="name">Course name</label>
+            <br>
+            <input id="name" name="name" type="text" th:value="${course != null ? course.name : ''}" style="height: 40px;">
+            <br>
+
+            <label for="description">Course description</label>
+            <br>
+            <input id="description" name="description" type="text" th:value="${course != null ? course.description : ''}" style="height: 60px;">
+            <br>
+
+            <label for="material">Course material</label>
+            <br>
+            <textarea id="material" name="material" th:text="${course != null ? course.material : ''}" style="height: 100px;"></textarea>
+            <br>
+
+            <label>Course level</label>
+            <br>
+            <div class="radioInput" style="padding-left: 30px;">
+                <input type="radio" id="level1" name="level" value="easy" th:checked="${course != null && course.level == 'easy'}">
+                <label for="level1" style="font-size: 25px; padding-left: 10px;">Easy</label><br>
+                <input type="radio" id="level2" name="level" value="medium" th:checked="${course != null && course.level == 'medium'}">
+                <label for="level2" style="font-size: 25px; padding-left: 10px;">Medium</label><br>
+                <input type="radio" id="level3" name="level" value="hard" th:checked="${course != null && course.level == 'hard'}">
+                <label for="level3" style="font-size: 25px; padding-left: 10px;">Hard</label>
+                <input type="hidden" name="id" th:value="${course != null ? course.id : -1}">
+            </div>
+            <br>
+            <button type="submit" style="all: unset; color: white; background-color: #072AC8; padding: 10px; font-size: 20px; border-radius: 15px; margin-right: 5px;" th:value="${course != null ? 'edit' : 'create'}" name="submitType" th:text="${course != null ? 'Edit Course' : 'Create Course'}">Create Course</button>
+            <button type="submit" style="all: unset; color: white; background-color: #072AC8; padding: 10px; font-size: 20px; border-radius: 15px;" value="delete" name="submitType" th:if="${course != null}">Delete Course</button>
+        </form>
+    </div>
+    <div class="createCourseContent image">
+        <img src="./images/arduinoImageCreateCourse.png" style="display: block; height: 650px; margin-right: 100px; width: 500px; border-radius: 13px; object-fit: cover;">
+    </div>
+</div>
+</body>
+</html>
