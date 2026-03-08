@@ -1,4 +1,4 @@
-package com.example.Duinophile;
+package com.Duinophile;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
