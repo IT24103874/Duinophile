@@ -1,0 +1,111 @@
+<div th:fragment="main">
+    <div style="max-width: 720px; margin: 0 auto;">
+
+        <!-- ── Edit lesson fields ── -->
+        <div class="lesson-card" style="margin-bottom: 1.5rem;">
+            <div class="lesson-nav-row" style="margin-bottom:1rem;">
+                <a th:href="@{/lessons/list}">← Back to Lessons</a>
+            </div>
+            <div class="form-heading-row">
+                <h2>Edit Lesson</h2>
+            </div>
+            <form th:action="@{/lessons/update/{id}(id=${lesson.id})}" th:object="${lesson}" method="post">
+
+                <div class="form-group">
+                    <label>Lesson name</label>
+                    <input type="text" th:field="*{title}" required maxlength="100" placeholder="Lesson title">
+                    <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"
+                        style="color:#b91c1c;font-size:0.8rem;display:block;margin-top:4px;"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Lesson content</label>
+                    <textarea th:field="*{content}" rows="8" required placeholder="Lesson content…"></textarea>
+                    <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"
+                        style="color:#b91c1c;font-size:0.8rem;display:block;margin-top:4px;"></span>
+                </div>
+
+                <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:0.5rem;">
+                    <button type="submit" class="btn-green">Update Lesson</button>
+                    <a th:href="@{/lessons/list}" class="lesson-back-link" style="align-self:center;">Cancel</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- ── Existing quiz questions — view only ── -->
+        <div class="lesson-card" style="margin-bottom: 1.5rem;" th:if="${not #lists.isEmpty(lesson.quiz)}">
+            <p class="section-label">Existing Quiz Questions
+                <span style="font-size:0.85rem;color:#4a6a8a;font-weight:400;"
+                    th:text="'(' + ${#lists.size(lesson.quiz)} + ')'"></span>
+            </p>
+            <div th:each="q, i : ${lesson.quiz}" class="quiz-list-item">
+                <div>
+                    <p class="q-text" th:text="|Q${i.count}: ${q.question}|">Question</p>
+                    <ul class="q-options">
+                        <li th:each="opt, optIdx : ${q.options}"
+                            th:class="${optIdx.index == q.correctOptionIndex} ? 'correct-opt' : ''">
+                            <span th:text="${optIdx.index == q.correctOptionIndex} ? '✅ ' : '○ '"></span>
+                            <span th:text="${opt}">Option</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Add new MCQ question ── -->
+        <div class="lesson-card">
+            <div class="form-heading-row">
+                <h2>Create MCQ
+                    <span th:text="${#lists.size(lesson.quiz) + 1}">1</span>
+                </h2>
+                <span class="points-badge">Points</span>
+            </div>
+
+            <form th:action="@{/lessons/{id}/add-quiz-question(id=${lesson.id})}" method="post">
+
+                <div class="form-group">
+                    <label>Lesson name</label>
+                    <input type="text" th:value="${lesson.title}" readonly style="background:#d4edff;cursor:default;">
+                </div>
+
+                <div class="form-group">
+                    <label for="mcq-question">Question <span
+                            style="color:#4a6a8a;font-weight:400;font-size:0.8rem;">(5–50 characters)</span></label>
+                    <input id="mcq-question" type="text" name="question" placeholder="e.g. What is an LED?" required
+                        minlength="5" maxlength="50">
+                </div>
+
+                <div class="option-row">
+                    <input type="radio" name="correctOption" value="0" id="correct0" checked>
+                    <label for="correct0">Option 1</label>
+                    <input type="text" name="option1" placeholder="Option 1 (1–30 chars)" required minlength="1"
+                        maxlength="30">
+                </div>
+
+                <div class="option-row">
+                    <input type="radio" name="correctOption" value="1" id="correct1">
+                    <label for="correct1">Option 2</label>
+                    <input type="text" name="option2" placeholder="Option 2 (1–30 chars)" required minlength="1"
+                        maxlength="30">
+                </div>
+
+                <div class="option-row">
+                    <input type="radio" name="correctOption" value="2" id="correct2">
+                    <label for="correct2">Option 3</label>
+                    <input type="text" name="option3" placeholder="Option 3 (1–30 chars)" maxlength="30">
+                </div>
+
+                <div class="option-row">
+                    <input type="radio" name="correctOption" value="3" id="correct3">
+                    <label for="correct3">Option 4</label>
+                    <input type="text" name="option4" placeholder="Option 4 (1–30 chars)" maxlength="30">
+                </div>
+
+                <button type="submit" class="btn-green" style="margin-top:1rem;">Create MCQ</button>
+            </form>
+
+            <span class="robot-icon">🤖</span>
+        </div>
+
+    </div>
+</div>

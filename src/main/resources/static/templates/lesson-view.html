@@ -1,0 +1,65 @@
+<div th:fragment="main">
+    <div class="lesson-card">
+
+        <!-- Back nav -->
+        <div class="lesson-nav-row">
+            <a th:href="@{/lessons/list}">← Back to Lessons</a>
+        </div>
+
+        <!-- Lesson content -->
+        <h2 class="lesson-title" th:text="${lesson.title}">Lesson Title</h2>
+        <div class="lesson-body" th:utext="${lesson.content}">Lesson Content</div>
+
+        <!-- Interactive quiz questions (student) -->
+        <div th:if="${not #lists.isEmpty(lesson.quiz)}"
+            style="margin-top:2rem; border-top:2px solid #BDE3FF; padding-top:1.5rem;">
+            <p class="section-label">Quiz Questions</p>
+            <div th:each="q, i : ${lesson.quiz}" th:id="'quiz-block-' + ${i.index}"
+                style="background:#eaf5ff; border-radius:10px; padding:1rem 1.25rem; margin-bottom:0.75rem;">
+
+                <p class="quiz-question-text" th:text="|Q${i.count}. ${q.question}|">Question</p>
+
+                <div th:each="opt, j : ${q.options}">
+                    <button type="button" class="option-btn" th:text="${opt}" th:data-qindex="${i.index}"
+                        th:data-oindex="${j.index}" th:data-correct="${q.correctOptionIndex}"
+                        onclick="handleAnswer(this)">
+                        Option
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin edit link -->
+        <div th:if="${currentUser != null and currentUser.role == 'ADMIN'}" style="margin-top:1.5rem;">
+            <a th:href="@{/lessons/edit/{id}(id=${lesson.id})}" class="lesson-back-link">✏️ Edit Lesson / Add Quiz</a>
+        </div>
+
+        <!-- Robot icon -->
+        <span class="robot-icon">🤖</span>
+    </div>
+
+    <script>
+        function handleAnswer(btn) {
+            var qIndex = btn.getAttribute('data-qindex');
+            var selected = parseInt(btn.getAttribute('data-oindex'));
+            var correct = parseInt(btn.getAttribute('data-correct'));
+
+            var allBtns = document.querySelectorAll('button.option-btn[data-qindex="' + qIndex + '"]');
+
+            for (var i = 0; i < allBtns.length; i++) {
+                allBtns[i].disabled = true;
+                allBtns[i].style.opacity = '0.7';
+                allBtns[i].style.cursor = 'default';
+                if (parseInt(allBtns[i].getAttribute('data-oindex')) === correct) {
+                    allBtns[i].classList.add('correct');
+                    allBtns[i].style.opacity = '1';
+                }
+            }
+
+            if (selected !== correct) {
+                btn.classList.add('wrong');
+                btn.style.opacity = '1';
+            }
+        }
+    </script>
+</div>

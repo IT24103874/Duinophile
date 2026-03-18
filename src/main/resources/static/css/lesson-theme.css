@@ -1,0 +1,373 @@
+
+
+/* ── Page base ── */
+body.lesson-page {
+    background: #f0f4f8;
+    color: #1a1a2e;
+    min-height: 100vh;
+}
+
+/* ── Navbar override ── */
+body.lesson-page nav {
+    background: #FFD600;
+    border-bottom: none;
+    backdrop-filter: none;
+    padding: 0.85rem 5%;
+}
+
+body.lesson-page nav .logo {
+    font-size: 1.4rem;
+    font-weight: 900;
+    background: none;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: #1a1a2e;
+    color: #1a1a2e;
+    letter-spacing: 0.5px;
+}
+
+body.lesson-page nav .nav-links a {
+    color: #1a1a2e;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+body.lesson-page nav .nav-links a:hover {
+    color: #333;
+    text-decoration: underline;
+}
+
+body.lesson-page nav .btn-logout {
+    background: #fff;
+    color: #1a1a2e;
+    border: none;
+    border-radius: 6px;
+    padding: 0.4rem 1rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+body.lesson-page nav .btn-logout:hover {
+    background: #ffe;
+}
+
+/* ── Page card wrapper ── */
+body.lesson-page .lesson-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 2.5rem 2.5rem 2rem;
+    max-width: 720px;
+    margin: 2rem auto;
+    position: relative;
+    transition: none;
+}
+
+body.lesson-page .lesson-card:hover {
+    transform: none;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+
+/* ── Back / Next nav row ── */
+body.lesson-page .lesson-nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+body.lesson-page .lesson-nav-row a {
+    color: #1a6bb5;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+body.lesson-page .lesson-nav-row a:hover {
+    text-decoration: underline;
+}
+
+/* ── Lesson content ── */
+body.lesson-page .lesson-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1a6bb5;
+    margin-bottom: 1rem;
+}
+
+body.lesson-page .lesson-body {
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: #2d2d44;
+}
+
+body.lesson-page .lesson-body ul {
+    padding-left: 1.25rem;
+}
+
+/* ── Form heading row (Create Lesson x / Create MCQ x) ── */
+body.lesson-page .form-heading-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+body.lesson-page .form-heading-row h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a6bb5;
+}
+
+body.lesson-page .points-badge {
+    background: #BDE3FF;
+    color: #1a6bb5;
+    border-radius: 6px;
+    padding: 0.2rem 0.65rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+/* ── Labels ── */
+body.lesson-page label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: #2d2d44;
+    margin-bottom: 0.35rem;
+}
+
+/* ── Inputs & textareas — light blue ── */
+body.lesson-page input[type="text"],
+body.lesson-page input[type="number"],
+body.lesson-page textarea,
+body.lesson-page select {
+    background: #BDE3FF;
+    border: none;
+    border-radius: 8px;
+    color: #1a2a3a;
+    padding: 0.65rem 0.9rem;
+    font-size: 0.9rem;
+    width: 100%;
+    outline: none;
+    transition: box-shadow 0.2s;
+}
+
+body.lesson-page input[type="text"]:focus,
+body.lesson-page textarea:focus {
+    box-shadow: 0 0 0 2px #6cbefa;
+}
+
+body.lesson-page input[type="text"]::placeholder,
+body.lesson-page textarea::placeholder {
+    color: #6a9abf;
+}
+
+/* ── Green primary button ── */
+body.lesson-page .btn-green {
+    display: inline-block;
+    background: #3CB371;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.7rem 1.8rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s;
+    margin-top: 0.5rem;
+}
+
+body.lesson-page .btn-green:hover {
+    background: #2e8b57;
+}
+
+/* ── MCQ option buttons (quiz view) ── */
+body.lesson-page .option-btn {
+    display: block;
+    width: 100%;
+    background: #7a8fa6;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    margin-bottom: 0.7rem;
+    transition: background 0.2s, transform 0.1s;
+}
+
+body.lesson-page .option-btn:hover {
+    background: #5d7086;
+    transform: translateY(-1px);
+}
+
+body.lesson-page .option-btn.correct {
+    background: #3CB371;
+}
+
+body.lesson-page .option-btn.wrong {
+    background: #e05c5c;
+}
+
+/* ── Quiz question text ── */
+body.lesson-page .quiz-question-text {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a6bb5;
+    margin-bottom: 1.25rem;
+    line-height: 1.5;
+}
+
+/* ── +Points reward screen ── */
+body.lesson-page .points-screen {
+    text-align: center;
+    padding: 2rem 0 1rem;
+}
+
+body.lesson-page .points-screen .points-value {
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #1a6bb5;
+    display: block;
+}
+
+body.lesson-page .points-screen .points-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d2d44;
+    display: block;
+    margin-bottom: 1.5rem;
+}
+
+/* ── MCQ create form — option row with checkbox ── */
+body.lesson-page .option-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+body.lesson-page .option-row label {
+    min-width: 70px;
+    margin: 0;
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: #2d2d44;
+}
+
+body.lesson-page .option-row input[type="text"] {
+    flex: 1;
+}
+
+body.lesson-page .option-row input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #3CB371;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* ── Error banner ── */
+body.lesson-page .lesson-error {
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.88rem;
+    color: #b91c1c;
+    margin-bottom: 1rem;
+}
+
+/* ── Robot icon ── */
+body.lesson-page .robot-icon {
+    position: absolute;
+    bottom: 1.25rem;
+    right: 1.5rem;
+    font-size: 1.75rem;
+    opacity: 0.6;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* ── Chatbot toggle override for lesson page ── */
+body.lesson-page #chatbot-toggle {
+    background: #FFD600;
+    color: #1a1a2e;
+}
+
+/* ── Back to course secondary link ── */
+body.lesson-page .lesson-back-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: #1a6bb5;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+body.lesson-page .lesson-back-link:hover {
+    text-decoration: underline;
+}
+
+/* ── Existing quiz question list (edit page) ── */
+body.lesson-page .quiz-list-item {
+    background: #eaf5ff;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+body.lesson-page .quiz-list-item .q-text {
+    font-weight: 600;
+    color: #1a2a3a;
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+}
+
+body.lesson-page .quiz-list-item .q-options {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.82rem;
+    color: #4a6a8a;
+}
+
+body.lesson-page .quiz-list-item .q-options .correct-opt {
+    color: #2e8b57;
+    font-weight: 700;
+}
+
+body.lesson-page .btn-remove {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: none;
+    border-radius: 6px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+
+body.lesson-page .btn-remove:hover {
+    background: #fca5a5;
+}
+
+body.lesson-page .section-label {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a6bb5;
+    margin: 1.5rem 0 0.75rem;
+}

@@ -1,0 +1,51 @@
+<div th:fragment="main">
+
+    <!-- Page heading -->
+    <div style="display:flex; justify-content:space-between; align-items:center;
+                max-width:720px; margin:0 auto 1.5rem;">
+        <h1 style="font-size:1.4rem; font-weight:800; color:#1a1a2e; margin:0;">Lessons</h1>
+        <a th:if="${currentUser != null and currentUser.role == 'ADMIN'}" th:href="@{/lessons/create}"
+            class="btn-green">+ Add Lesson</a>
+    </div>
+
+    <!-- Lesson cards -->
+    <div style="max-width:720px; margin:0 auto;">
+
+        <div th:if="${#lists.isEmpty(lessons)}" style="text-align:center; color:#4a6a8a; padding:3rem; background:#fff;
+                    border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+            No lessons yet. Check back soon!
+        </div>
+
+        <div th:each="lesson, i : ${lessons}" class="lesson-card" style="margin-bottom:1rem; padding:1.25rem 1.5rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem;">
+
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                    <span th:text="${i.count}" style="background:#BDE3FF; color:#1a6bb5; font-weight:800;
+                                 font-size:0.85rem; width:30px; height:30px; border-radius:50%;
+                                 display:inline-flex; align-items:center; justify-content:center;
+                                 flex-shrink:0;">1</span>
+                    <span th:text="${lesson.title}"
+                        style="font-weight:700; color:#1a1a2e; font-size:0.95rem;">Title</span>
+                </div>
+
+                <div style="display:flex; gap:0.6rem; flex-shrink:0;">
+                    <a th:href="@{/lessons/view/{id}(id=${lesson.id})}" class="btn-green"
+                        style="padding:0.4rem 1rem; font-size:0.85rem;"
+                        th:text="${currentUser != null and currentUser.role == 'ADMIN'} ? '👁 View' : '▶ Start'">▶
+                        Start</a>
+
+                    <a th:if="${currentUser != null and currentUser.role == 'ADMIN'}"
+                        th:href="@{/lessons/edit/{id}(id=${lesson.id})}" style="background:#BDE3FF; color:#1a6bb5; border:none; border-radius:8px;
+                              padding:0.4rem 0.85rem; font-size:0.85rem; font-weight:700;
+                              text-decoration:none;">✏️</a>
+
+                    <a th:if="${currentUser != null and currentUser.role == 'ADMIN'}"
+                        th:href="@{/lessons/delete/{id}(id=${lesson.id})}"
+                        onclick="return confirm('Delete this lesson?')" style="background:#fee2e2; color:#b91c1c; border:none; border-radius:8px;
+                              padding:0.4rem 0.85rem; font-size:0.85rem; font-weight:700;
+                              text-decoration:none;">🗑️</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duinophile - Learning Platform</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/lesson-theme.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+
+<body th:class="${pageClass != null ? pageClass : ''}">
+    <nav>
+        <div class="logo">DUINOPHILE</div>
+        <ul class="nav-links">
+            <li><a th:href="@{/lessons/list}">Lessons</a></li>
+            <li th:if="${currentUser == null}"><a th:href="@{/auth-login}">Login</a></li>
+
+            <li th:if="${currentUser != null}">
+                <span th:text="${currentUser.username}" style="font-weight:600;">username</span>
+            </li>
+            <li th:if="${currentUser != null}">
+                <a th:href="@{/logout}" class="btn btn-secondary btn-logout">Log out</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="container animate-fade-in">
+        <main th:insert="~{__${view}__ :: main}"></main>
+    </div>
+</body>
+
+</html>
