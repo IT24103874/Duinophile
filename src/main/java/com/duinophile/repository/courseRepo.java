@@ -1,6 +1,6 @@
-package com.example.Duinophile.repository;
+package com.duinophile.repository;
 
-import com.example.Duinophile.model.course;
+import com.duinophile.model.course;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

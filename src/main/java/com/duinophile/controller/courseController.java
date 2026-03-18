@@ -1,7 +1,7 @@
-package com.example.Duinophile.controller;
+package com.duinophile.controller;
 
-import com.example.Duinophile.model.course;
-import com.example.Duinophile.repository.courseRepo;
+import com.duinophile.model.course;
+import com.duinophile.repository.courseRepo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

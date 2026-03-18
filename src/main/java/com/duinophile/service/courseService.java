@@ -1,7 +1,7 @@
-package com.example.Duinophile.service;
+package com.duinophile.service;
 
-import com.example.Duinophile.model.course;
-import com.example.Duinophile.repository.courseRepo;
+import com.duinophile.model.course;
+import com.duinophile.repository.courseRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

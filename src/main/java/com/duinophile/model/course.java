@@ -1,4 +1,4 @@
-package com.example.Duinophile.model;
+package com.duinophile.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
