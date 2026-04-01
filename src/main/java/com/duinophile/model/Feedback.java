@@ -21,6 +21,7 @@ public class Feedback {
     private String id;
 
     @NotBlank(message = "Feedback content is required")
+    @jakarta.validation.constraints.Size(min = 10, max = 1000, message = "Feedback must be between 10 and 1000 characters")
     private String content;
 
     @Min(value = 1, message = "Rating must be at least 1")
@@ -31,4 +32,5 @@ public class Feedback {
     private String userId; // Reference to User id
     private String username;
     private LocalDateTime createdAt = LocalDateTime.now();
+    private String status = "PENDING";
 }
