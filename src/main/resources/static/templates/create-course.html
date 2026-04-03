@@ -1,4 +1,4 @@
-<div th:fragment="main">
+<div th:fragment="main" xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="glass-card" style="max-width: 700px; margin: 2rem auto;">
         <h2>Create New Course</h2>
         <form th:action="@{/courses/create}" th:object="${course}" method="post">

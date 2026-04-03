@@ -1,4 +1,4 @@
-<div th:fragment="main">
+<div th:fragment="main" xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="page-header">
         <h1>Courses</h1>
         <a th:if="${currentUser != null and (currentUser.role == 'STAFF' or currentUser.role == 'ADMIN')}"
