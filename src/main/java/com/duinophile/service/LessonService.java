@@ -30,7 +30,9 @@ public class LessonService {
         Lesson lesson = lessonRepository.findById(id).orElseThrow(() -> new RuntimeException("Lesson not found"));
         lesson.setTitle(lessonDetails.getTitle());
         lesson.setContent(lessonDetails.getContent());
-        lesson.setQuiz(lessonDetails.getQuiz()); // Update integrated Quiz
+        lesson.setQuiz(lessonDetails.getQuiz());
+        lesson.setMaterialUrl(lessonDetails.getMaterialUrl());
+        lesson.setMaterialName(lessonDetails.getMaterialName());
         return lessonRepository.save(lesson);
     }
 
