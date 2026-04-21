@@ -42,9 +42,9 @@
                             <th:block th:each="q, qs : ${lesson.quiz}">
                                 <li th:if="${#fields.hasErrors('quiz[__${qs.index}__].content')}" th:each="err : ${#fields.errors('quiz[__${qs.index}__].content')}" th:text="${err}"></li>
                             </th:block>
-                            
+
                             <li th:each="err : ${#fields.errors('quiz')}" th:text="${err}"></li>
-                            
+
                             <th:block th:each="q, qs : ${lesson.quiz}">
                                 <li th:if="${#fields.hasErrors('quiz[__${qs.index}__].points')}" th:each="err : ${#fields.errors('quiz[__${qs.index}__].points')}" th:text="${err}"></li>
                             </th:block>

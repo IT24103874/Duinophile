@@ -23,7 +23,7 @@
                 <div class="form-group" style="background:#f8f9fa; padding:1rem; border-radius:10px; border:1px dashed var(--blue-mid);">
                     <label style="color:var(--blue); font-weight:700;">📂 Lesson Materials (PDF)</label>
                     <p style="font-size:0.75rem; color:var(--text-muted); margin-top:-0.4rem; margin-bottom:0.8rem;">Update or upload a study guide for this lesson.</p>
-                    
+
                     <!-- Current File Display -->
                     <div th:if="${lesson.materialUrl}" style="background:white; padding:0.6rem; border-radius:8px; margin-bottom:0.8rem; display:flex; align-items:center; gap:0.6rem; border:1px solid #eee;">
                         <span style="font-size:1.2rem;">📄</span>
@@ -59,9 +59,9 @@
                             <th:block th:each="q, qs : ${lesson.quiz}">
                                 <li th:if="${#fields.hasErrors('quiz[__${qs.index}__].content')}" th:each="err : ${#fields.errors('quiz[__${qs.index}__].content')}" th:text="${err}"></li>
                             </th:block>
-                            
+
                             <li th:each="err : ${#fields.errors('quiz')}" th:text="${err}"></li>
-                            
+
                             <th:block th:each="q, qs : ${lesson.quiz}">
                                 <li th:if="${#fields.hasErrors('quiz[__${qs.index}__].points')}" th:each="err : ${#fields.errors('quiz[__${qs.index}__].points')}" th:text="${err}"></li>
                             </th:block>
@@ -117,7 +117,7 @@
             </form>
         </div>
     </div>
-    
+
     <!-- Hidden form for deleting material without nesting -->
     <form id="delete-mat-form" th:action="@{/lessons/delete-material/{id}(id=${lesson.id})}" method="post" style="display:none;"></form>
 

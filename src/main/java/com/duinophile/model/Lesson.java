@@ -7,7 +7,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,30 +20,39 @@ public class Lesson {
     private String id;
 
     @NotBlank(message = "Lesson title is required")
-    @Size(min = 5, max = 100, message = "Title must be between 5 and 100 characters")
+    @jakarta.validation.constraints.Size(min = 5, max = 50, message = "Title must be between 5 and 50 characters")
     private String title;
 
     @NotBlank(message = "Lesson content is required")
-    @Size(min = 20, message = "Content must be at least 20 characters long")
+    @jakarta.validation.constraints.Size(min = 20, max = 5000, message = "Content must be between 20 and 5000 characters")
     private String content;
 
-    // Optional grouping reference — not required
     private String courseId;
 
+    @jakarta.validation.Valid
     private List<QuizQuestion> quiz = new ArrayList<>();
+    private String materialUrl; // Path to PDF
+    private String materialName; // Original file name
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class QuizQuestion {
-
-        @NotBlank(message = "Quiz question text is required")
-        @Size(min = 5, max = 50, message = "Question must be between 5 and 50 characters")
+        @NotBlank(message = "Question cannot be blank")
+        @jakarta.validation.constraints.Size(min = 10, max = 75, message = "Quiz question must be between 10 and 75 characters")
         private String question;
 
-        @Size(min = 2, message = "At least 2 options are required")
-        private List<String> options = new ArrayList<>();
+        @jakarta.validation.constraints.Size(min = 10, max = 200, message = "Content must be between 10 and 200 characters (Optional)")
+        private String content; // Context or explanation material for this specific question
 
+        public void setContent(String content) {
+            this.content = (content == null || content.trim().isEmpty()) ? null : content.trim();
+        }
+
+        private List<String> options = new ArrayList<>();
         private int correctOptionIndex;
+        @jakarta.validation.constraints.Min(value = 0, message = "Points cannot be a negative number")
+        @jakarta.validation.constraints.Max(value = 100, message = "Points cannot exceed 100")
+        private int points = 10; // Points awarded for a correct answer
     }
 }
