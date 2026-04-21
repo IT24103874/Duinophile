@@ -1,195 +1,111 @@
-<div th:fragment="main">
-    <div style="max-width: 720px; margin: 2rem auto;">
-        <div class="form-card">
-            <div style="margin-bottom:1.2rem;">
-                <a th:href="@{/lessons/view/{id}(id=${lesson.id})}" class="btn btn-secondary" style="display:inline-flex; align-items:center; gap:0.4rem; font-size:0.9rem;">← Back</a>
+<div th:fragment="main" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div style="max-width: 720px; margin: 0 auto;">
+
+        <!-- ── Edit lesson fields ── -->
+        <div class="lesson-card" style="margin-bottom: 1.5rem;">
+            <div class="lesson-nav-row" style="margin-bottom:1rem;">
+                <a th:href="@{/lessons/list}">← Back to Lessons</a>
             </div>
-            <h2 style="color:var(--navy); margin-bottom:1.5rem;">Edit Lesson</h2>
-            <form th:action="@{/lessons/update/{id}(id=${lesson.id})}" th:object="${lesson}" method="post" enctype="multipart/form-data" novalidate>
-                <input type="hidden" th:field="*{courseId}">
+            <div class="form-heading-row">
+                <h2>Edit Lesson</h2>
+            </div>
+            <form th:action="@{/lessons/update/{id}(id=${lesson.id})}" th:object="${lesson}" method="post">
 
                 <div class="form-group">
-                    <label>Lesson Name</label>
-                    <input type="text" th:field="*{title}" required>
-                    <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" style="color:var(--red); font-size:0.75rem; font-weight:700; display:block; margin-top:0.3rem;"></span>
+                    <label>Lesson name</label>
+                    <input type="text" th:field="*{title}" required maxlength="100" placeholder="Lesson title">
+                    <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"
+                        style="color:#b91c1c;font-size:0.8rem;display:block;margin-top:4px;"></span>
                 </div>
+
                 <div class="form-group">
-                    <label>Lesson Content</label>
-                    <textarea th:field="*{content}" rows="8" required></textarea>
-                    <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}" style="color:var(--red); font-size:0.75rem; font-weight:700; display:block; margin-top:0.3rem;"></span>
+                    <label>Lesson content</label>
+                    <textarea th:field="*{content}" rows="8" required placeholder="Lesson content…"></textarea>
+                    <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"
+                        style="color:#b91c1c;font-size:0.8rem;display:block;margin-top:4px;"></span>
                 </div>
 
-                <!-- PDF Material Upload -->
-                <div class="form-group" style="background:#f8f9fa; padding:1rem; border-radius:10px; border:1px dashed var(--blue-mid);">
-                    <label style="color:var(--blue); font-weight:700;">📂 Lesson Materials (PDF)</label>
-                    <p style="font-size:0.75rem; color:var(--text-muted); margin-top:-0.4rem; margin-bottom:0.8rem;">Update or upload a study guide for this lesson.</p>
-
-                    <!-- Current File Display -->
-                    <div th:if="${lesson.materialUrl}" style="background:white; padding:0.6rem; border-radius:8px; margin-bottom:0.8rem; display:flex; align-items:center; gap:0.6rem; border:1px solid #eee;">
-                        <span style="font-size:1.2rem;">📄</span>
-                        <div style="flex:1;">
-                            <div style="font-size:0.85rem; font-weight:600; color:var(--navy);" th:text="${lesson.materialName}">lesson_material.pdf</div>
-                            <div style="font-size:0.7rem; color:var(--green);">Currently uploaded</div>
-                        </div>
-                        <button type="button" class="btn btn-sm btn-red" style="padding:0.35rem 0.7rem; font-size:0.78rem;"
-                                onclick="if(confirm('Remove the PDF material from this lesson?')) { document.getElementById('delete-mat-form').submit(); }">
-                            🗑️ Delete PDF
-                        </button>
-                    </div>
-
-
-                    <input type="file" name="materialFile" accept="application/pdf" style="padding:0.5rem; background:white; border:1.5px solid #eee; width:100%;">
-                    <span th:if="${#fields.hasErrors('materialName')}" th:errors="*{materialName}" style="color:var(--red); font-size:0.75rem; font-weight:700; display:block; margin-top:0.5rem;"></span>
-                </div>
-
-                <!-- Existing Quiz Questions -->
-                <div style="border-top:2px solid var(--border); margin-top:1.5rem; padding-top:1.5rem;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                        <h3 style="color:var(--navy); margin-bottom:0;">Quiz Questions</h3>
-                        <button type="button" onclick="addQuestion()" class="btn btn-sm" style="background:var(--blue); color:white; border:none;">+ Add Question</button>
-                    </div>
-
-                    <!-- Improved Validation Error Display -->
-                    <div th:if="${#fields.hasErrors('quiz*')}" style="margin-bottom:1rem; font-size:0.85rem; padding:0.8rem; background:#fee; border:1px solid #fcc; color:var(--red); border-radius:6px;">
-                        <strong>Please fix the following errors in your quiz creation:</strong>
-                        <ul style="margin-top:0.4rem; padding-left:1.2rem; margin-bottom:0;">
-                            <th:block th:each="q, qs : ${lesson.quiz}">
-                                <li th:if="${#fields.hasErrors('quiz[__${qs.index}__].question')}" th:each="err : ${#fields.errors('quiz[__${qs.index}__].question')}" th:text="${err}"></li>
-                            </th:block>
-                            <th:block th:each="q, qs : ${lesson.quiz}">
-                                <li th:if="${#fields.hasErrors('quiz[__${qs.index}__].content')}" th:each="err : ${#fields.errors('quiz[__${qs.index}__].content')}" th:text="${err}"></li>
-                            </th:block>
-
-                            <li th:each="err : ${#fields.errors('quiz')}" th:text="${err}"></li>
-
-                            <th:block th:each="q, qs : ${lesson.quiz}">
-                                <li th:if="${#fields.hasErrors('quiz[__${qs.index}__].points')}" th:each="err : ${#fields.errors('quiz[__${qs.index}__].points')}" th:text="${err}"></li>
-                            </th:block>
-                        </ul>
-                    </div>
-
-                    <div id="quiz-container">
-                        <!-- Render existing questions bound to the model -->
-                        <div th:each="q, qs : ${lesson.quiz}" class="quiz-block">
-                            <div class="quiz-block-header" style="display:flex; justify-content:space-between; margin-bottom:0.75rem;">
-                                <span style="font-weight:700; color:var(--navy); font-size:0.88rem;">Question <span class="q-num" th:text="${qs.count}">1</span></span>
-                                <button type="button" class="remove-btn" onclick="removeQuestion(this)" title="Remove">&#215;</button>
-                            </div>
-                            <div class="form-group" style="margin-bottom:0.75rem;">
-                                <label>Question Text</label>
-                                <input type="text" th:name="'quiz[' + ${qs.index} + '].question'" th:value="${q.question}" required>
-                            </div>
-                            <div class="form-group" style="margin-bottom:0.75rem;">
-                                <label>Content / Context <small style="color:var(--text-muted); font-weight:400;">(Optional)</small></label>
-                                <textarea th:name="'quiz[' + ${qs.index} + '].content'" th:text="${q.content}" rows="2" placeholder="Provide context or explanation for this question"></textarea>
-                            </div>
-                            <div style="margin-bottom:0.4rem;">
-                                <label style="font-size:0.82rem; color:var(--text-muted); font-weight:600;">Options (select correct answer)</label>
-                            </div>
-                            <div class="opt-row">
-                                <input type="radio" th:name="'quiz[' + ${qs.index} + '].correctOptionIndex'" value="0" th:checked="${q.correctOptionIndex == 0}">
-                                <input type="text" th:name="'quiz[' + ${qs.index} + '].options[0]'" th:value="${#lists.size(q.options) > 0 ? q.options[0] : ''}" placeholder="Option 1" style="flex:1;">
-                            </div>
-                            <div class="opt-row">
-                                <input type="radio" th:name="'quiz[' + ${qs.index} + '].correctOptionIndex'" value="1" th:checked="${q.correctOptionIndex == 1}">
-                                <input type="text" th:name="'quiz[' + ${qs.index} + '].options[1]'" th:value="${#lists.size(q.options) > 1 ? q.options[1] : ''}" placeholder="Option 2" style="flex:1;">
-                            </div>
-                            <div class="opt-row">
-                                <input type="radio" th:name="'quiz[' + ${qs.index} + '].correctOptionIndex'" value="2" th:checked="${q.correctOptionIndex == 2}">
-                                <input type="text" th:name="'quiz[' + ${qs.index} + '].options[2]'" th:value="${#lists.size(q.options) > 2 ? q.options[2] : ''}" placeholder="Option 3" style="flex:1;">
-                            </div>
-                            <div class="opt-row">
-                                <input type="radio" th:name="'quiz[' + ${qs.index} + '].correctOptionIndex'" value="3" th:checked="${q.correctOptionIndex == 3}">
-                                <input type="text" th:name="'quiz[' + ${qs.index} + '].options[3]'" th:value="${#lists.size(q.options) > 3 ? q.options[3] : ''}" placeholder="Option 4" style="flex:1;">
-                            </div>
-                            <div class="points-row">
-                                <label>🏆 Points for correct answer:</label>
-                                <input type="number" th:name="'quiz[' + ${qs.index} + '].points'" th:value="${q.points > 0 ? q.points : 10}" min="-1000" max="1000">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="display:flex; gap:0.75rem; margin-top:1.5rem;">
-                    <button type="submit" class="btn">Save Changes</button>
-                    <a th:href="@{/lessons/view/{id}(id=${lesson.id})}" class="btn btn-secondary">Cancel</a>
+                <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:0.5rem;">
+                    <button type="submit" class="btn-green">Update Lesson</button>
+                    <a th:href="@{/lessons/list}" class="lesson-back-link" style="align-self:center;">Cancel</a>
                 </div>
             </form>
         </div>
+
+        <!-- ── Existing quiz questions — view only ── -->
+        <div class="lesson-card" style="margin-bottom: 1.5rem;" th:if="${not #lists.isEmpty(lesson.quiz)}">
+            <p class="section-label">Existing Quiz Questions
+                <span style="font-size:0.85rem;color:#4a6a8a;font-weight:400;"
+                    th:text="'(' + ${#lists.size(lesson.quiz)} + ')'"></span>
+            </p>
+            <div th:each="q, i : ${lesson.quiz}" class="quiz-list-item">
+                <div>
+                    <p class="q-text" th:text="|Q${i.count}: ${q.question}|">Question</p>
+                    <ul class="q-options">
+                        <li th:each="opt, optIdx : ${q.options}"
+                            th:class="${optIdx.index == q.correctOptionIndex} ? 'correct-opt' : ''">
+                            <span th:text="${optIdx.index == q.correctOptionIndex} ? '✅ ' : '○ '"></span>
+                            <span th:text="${opt}">Option</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Add new MCQ question ── -->
+        <div class="lesson-card">
+            <div class="form-heading-row">
+                <h2>Create MCQ
+                    <span th:text="${#lists.size(lesson.quiz) + 1}">1</span>
+                </h2>
+                <span class="points-badge">Points</span>
+            </div>
+
+            <form th:action="@{/lessons/{id}/add-quiz-question(id=${lesson.id})}" method="post">
+
+                <div class="form-group">
+                    <label>Lesson name</label>
+                    <input type="text" th:value="${lesson.title}" readonly style="background:#d4edff;cursor:default;">
+                </div>
+
+                <div class="form-group">
+                    <label for="mcq-question">Question <span
+                            style="color:#4a6a8a;font-weight:400;font-size:0.8rem;">(5–50 characters)</span></label>
+                    <input id="mcq-question" type="text" name="question" placeholder="e.g. What is an LED?" required
+                        minlength="5" maxlength="50">
+                </div>
+
+                <div class="option-row">
+                    <input type="radio" name="correctOption" value="0" id="correct0" checked>
+                    <label for="correct0">Option 1</label>
+                    <input type="text" name="option1" placeholder="Option 1 (1–30 chars)" required minlength="1"
+                        maxlength="30">
+                </div>
+
+                <div class="option-row">
+                    <input type="radio" name="correctOption" value="1" id="correct1">
+                    <label for="correct1">Option 2</label>
+                    <input type="text" name="option2" placeholder="Option 2 (1–30 chars)" required minlength="1"
+                        maxlength="30">
+                </div>
+
+                <div class="option-row">
+                    <input type="radio" name="correctOption" value="2" id="correct2">
+                    <label for="correct2">Option 3</label>
+                    <input type="text" name="option3" placeholder="Option 3 (1–30 chars)" maxlength="30">
+                </div>
+
+                <div class="option-row">
+                    <input type="radio" name="correctOption" value="3" id="correct3">
+                    <label for="correct3">Option 4</label>
+                    <input type="text" name="option4" placeholder="Option 4 (1–30 chars)" maxlength="30">
+                </div>
+
+                <button type="submit" class="btn-green" style="margin-top:1rem;">Create MCQ</button>
+            </form>
+
+            <span class="robot-icon">🤖</span>
+        </div>
+
     </div>
-
-    <!-- Hidden form for deleting material without nesting -->
-    <form id="delete-mat-form" th:action="@{/lessons/delete-material/{id}(id=${lesson.id})}" method="post" style="display:none;"></form>
-
-    <style>
-        .quiz-block {
-            background: var(--blue-light, #eef4ff);
-            border: 1.5px solid var(--blue-mid, #c7d9ff);
-            border-radius: 12px;
-            padding: 1.2rem;
-            margin-bottom: 1rem;
-        }
-        .quiz-block-header { margin-bottom: 0.75rem; }
-        .quiz-block .remove-btn {
-            background: #fee; border: 1px solid #fcc; color: #c00;
-            border-radius: 50%; width: 26px; height: 26px; font-size: 1rem;
-            cursor: pointer; line-height: 1; display: flex; align-items: center; justify-content: center;
-        }
-        .opt-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem; }
-        .opt-row input[type="radio"] { width: auto; margin: 0; accent-color: var(--green); }
-        .points-row { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.75rem; }
-        .points-row label { font-size: 0.82rem; color: var(--text-muted); font-weight: 600; white-space: nowrap; }
-        .points-row input[type="number"] { width: 80px; }
-    </style>
-
-    <script>
-        function addQuestion() {
-            const container = document.getElementById('quiz-container');
-            const i = document.querySelectorAll('.quiz-block').length;
-            const block = document.createElement('div');
-            block.className = 'quiz-block';
-            block.innerHTML = `
-                <div class="quiz-block-header" style="display:flex; justify-content:space-between; margin-bottom:0.75rem;">
-                    <span style="font-weight:700; color:var(--navy); font-size:0.88rem;">Question <span class="q-num">${i + 1}</span></span>
-                    <button type="button" class="remove-btn" onclick="removeQuestion(this)" title="Remove">&#215;</button>
-                </div>
-                <div class="form-group" style="margin-bottom:0.75rem;">
-                    <label>Question Text</label>
-                    <input type="text" name="quiz[${i}].question" placeholder="Enter question..." required>
-                </div>
-                <div class="form-group" style="margin-bottom:0.75rem;">
-                    <label>Content / Context <small style="color:var(--text-muted); font-weight:400;">(Optional)</small></label>
-                    <textarea name="quiz[${i}].content" placeholder="Provide context or explanation for this question" rows="2"></textarea>
-                </div>
-                <div style="margin-bottom:0.4rem;">
-                    <label style="font-size:0.82rem; color:var(--text-muted); font-weight:600;">Options (select correct answer)</label>
-                </div>
-                <div class="opt-row"><input type="radio" name="quiz[${i}].correctOptionIndex" value="0" checked><input type="text" name="quiz[${i}].options[0]" placeholder="Option 1" style="flex:1;"></div>
-                <div class="opt-row"><input type="radio" name="quiz[${i}].correctOptionIndex" value="1"><input type="text" name="quiz[${i}].options[1]" placeholder="Option 2" style="flex:1;"></div>
-                <div class="opt-row"><input type="radio" name="quiz[${i}].correctOptionIndex" value="2"><input type="text" name="quiz[${i}].options[2]" placeholder="Option 3" style="flex:1;"></div>
-                <div class="opt-row"><input type="radio" name="quiz[${i}].correctOptionIndex" value="3"><input type="text" name="quiz[${i}].options[3]" placeholder="Option 4" style="flex:1;"></div>
-                <div class="points-row">
-                    <label>🏆 Points for correct answer:</label>
-                    <input type="number" name="quiz[${i}].points" value="10" min="-1000" max="1000">
-                </div>
-            `;
-            container.appendChild(block);
-        }
-
-        function removeQuestion(btn) {
-            btn.closest('.quiz-block').remove();
-            reindexQuestions();
-        }
-
-        function reindexQuestions() {
-            const blocks = document.querySelectorAll('.quiz-block');
-            blocks.forEach(function(block, idx) {
-                const qNumStr = block.querySelector('.q-num');
-                if (qNumStr) qNumStr.textContent = (idx + 1);
-                block.querySelectorAll('input[name], textarea[name]').forEach(function(input) {
-                    input.name = input.name.replace(/quiz\[\d+\]/, 'quiz[' + idx + ']');
-                });
-            });
-        }
-    </script>
 </div>
