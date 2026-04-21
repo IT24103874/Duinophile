@@ -38,9 +38,8 @@ public class LessonController {
 
     @PostMapping("/create")
     public String createLesson(@Valid @ModelAttribute("lesson") Lesson lesson,
-                               BindingResult result,
-                               @RequestParam(value = "materialFile", required = false) MultipartFile materialFile,
-                               Model model) {
+                               @RequestParam("materialFile") MultipartFile materialFile,
+                               BindingResult result, Model model) {
 
         validateQuizzes(lesson, result);
         validateFile(materialFile, result);
@@ -83,9 +82,8 @@ public class LessonController {
 
     @PostMapping("/update/{id}")
     public String updateLesson(@PathVariable String id, @Valid @ModelAttribute("lesson") Lesson lesson,
-                               BindingResult result,
-                               @RequestParam(value = "materialFile", required = false) MultipartFile materialFile,
-                               Model model) {
+                               @RequestParam("materialFile") MultipartFile materialFile,
+                               BindingResult result, Model model) {
 
         validateQuizzes(lesson, result);
         validateFile(materialFile, result);
@@ -94,19 +92,7 @@ public class LessonController {
             model.addAttribute("view", "edit-lesson");
             return "layout";
         }
-
-        lessonService.getById(id).ifPresent(existingLesson -> {
-            if (materialFile == null || materialFile.isEmpty()) {
-                // Preserve existing material if a new file isn't uploaded
-                lesson.setMaterialUrl(existingLesson.getMaterialUrl());
-                lesson.setMaterialName(existingLesson.getMaterialName());
-            } else {
-                // Delete old file from disk before uploading new one
-                deletePhysicalFile(existingLesson.getMaterialUrl());
-                handleFileUpload(lesson, materialFile);
-            }
-        });
-
+        handleFileUpload(lesson, materialFile);
         lessonService.updateLesson(id, lesson);
         return "redirect:/lessons/view/" + id;
     }
@@ -133,8 +119,8 @@ public class LessonController {
 
     private void validateFile(MultipartFile file, BindingResult result) {
         if (file != null && !file.isEmpty()) {
-            if (file.getSize() > 5242880) { // 5MB limit
-                result.rejectValue("materialName", "error.lesson", "File size must be strictly under 5MB.");
+            if (file.getSize() > 20971520) { // 20MB limit
+                result.rejectValue("materialName", "error.lesson", "File size must be strictly under 20MB.");
             }
             if (!"application/pdf".equals(file.getContentType())) {
                 result.rejectValue("materialName", "error.lesson", "Lesson material must be a PDF file.");
@@ -144,7 +130,7 @@ public class LessonController {
 
     @ExceptionHandler(org.springframework.web.multipart.MaxUploadSizeExceededException.class)
     public String handleMaxSizeException(org.springframework.web.multipart.MaxUploadSizeExceededException exc, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttrs) {
-        redirectAttrs.addFlashAttribute("error", "The uploaded file exceeds the absolute 5MB server limit. Please upload a smaller PDF.");
+        redirectAttrs.addFlashAttribute("error", "The uploaded file exceeds the absolute 20MB server limit. Please upload a smaller PDF.");
         return "redirect:/courses/list";
     }
 
@@ -171,25 +157,9 @@ public class LessonController {
         }
     }
 
-    private void deletePhysicalFile(String materialUrl) {
-        if (materialUrl != null && !materialUrl.isEmpty()) {
-            try {
-                // Extract filename dynamically to ensure perfect path resolution
-                String fileName = materialUrl.substring(materialUrl.lastIndexOf("/") + 1);
-                Path filePath = Paths.get("./uploads/").resolve(fileName);
-                Files.deleteIfExists(filePath);
-            } catch (Exception e) {
-                System.err.println("Failed to delete physical file: " + e.getMessage());
-            }
-        }
-    }
-
     @PostMapping("/delete/{id}")
     public String deleteLesson(@PathVariable String id) {
-        String courseId = lessonService.getById(id).map(lesson -> {
-            deletePhysicalFile(lesson.getMaterialUrl());
-            return lesson.getCourseId();
-        }).orElse("");
+        String courseId = lessonService.getById(id).map(Lesson::getCourseId).orElse("");
         lessonService.deleteLesson(id);
         return "redirect:/courses/view/" + courseId;
     }
@@ -197,7 +167,15 @@ public class LessonController {
     @PostMapping("/delete-material/{id}")
     public String deleteMaterial(@PathVariable String id, RedirectAttributes redirectAttrs) {
         lessonService.getById(id).ifPresent(lesson -> {
-            deletePhysicalFile(lesson.getMaterialUrl());
+            // Delete the physical file from disk
+            if (lesson.getMaterialUrl() != null) {
+                try {
+                    Path filePath = Paths.get("." + lesson.getMaterialUrl());
+                    Files.deleteIfExists(filePath);
+                } catch (IOException e) {
+                    System.err.println("Failed to delete material file: " + e.getMessage());
+                }
+            }
             lesson.setMaterialUrl(null);
             lesson.setMaterialName(null);
             lessonService.updateLesson(id, lesson);
@@ -220,17 +198,6 @@ public class LessonController {
         lessonService.getById(id).ifPresent(lesson -> {
             lesson.getQuiz().add(question);
             lessonService.updateLesson(id, lesson);
-        });
-        return "redirect:/lessons/view/" + id;
-    }
-
-    @PostMapping("/{id}/delete-quiz-question/{questionIndex}")
-    public String deleteQuizQuestion(@PathVariable String id, @PathVariable int questionIndex) {
-        lessonService.getById(id).ifPresent(lesson -> {
-            if (lesson.getQuiz() != null && questionIndex >= 0 && questionIndex < lesson.getQuiz().size()) {
-                lesson.getQuiz().remove(questionIndex);
-                lessonService.updateLesson(id, lesson);
-            }
         });
         return "redirect:/lessons/view/" + id;
     }
