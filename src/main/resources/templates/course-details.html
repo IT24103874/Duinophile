@@ -1,4 +1,4 @@
-<div th:fragment="main" xmlns:th="http://www.w3.org/1999/xhtml">
+<div th:fragment="main">
 
     <!-- Header Bar -->
     <div class="header-roadmap">
@@ -67,7 +67,10 @@
 
         <!-- Empty state -->
         <div th:if="${#lists.isEmpty(lessons)}" style="text-align:center; padding:4rem; color:var(--text-muted); font-size:1.1rem;">
-            No lessons yet. Click <strong>Add Lesson</strong> above!
+            <span>No lessons yet.</span>
+            <span th:if="${currentUser != null and (currentUser.role == 'ADMIN' or currentUser.role == 'STAFF')}">
+                Click <strong>Add Lesson</strong> above!
+            </span>
         </div>
     </div>
     
