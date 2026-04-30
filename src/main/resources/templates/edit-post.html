@@ -82,11 +82,17 @@
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-bottom: 2rem;">
-                    <label for="level" style="font-weight: 600; font-size: 0.9rem; color: #374151; display: block; margin-bottom: 0.5rem;">Level / Value (0-20)</label>
-                    <input type="number" th:field="*{level}" id="level" min="0" max="20" placeholder="20"
-                           oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value > 20) this.value = 20;"
-                           style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;"/>
+                <div class="form-group" style="margin-bottom: 2rem; display: flex; align-items: center; gap: 2rem;">
+                    <div style="flex: 1;">
+                        <label for="level" style="font-weight: 600; font-size: 0.9rem; color: #374151; display: block; margin-bottom: 0.5rem;">Level / Value (0-20)</label>
+                        <input type="number" th:field="*{level}" id="level" min="0" max="20" placeholder="20"
+                               oninput="updateEditPoints(this.value)"
+                               style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;"/>
+                    </div>
+                    <div style="text-align: center; background: #f8fafc; padding: 1.25rem 2rem; border-radius: 12px; border: 1px solid #e2e8f0; min-width: 120px;">
+                        <span id="editPointsDisplay" style="font-size: 2.5rem; font-weight: 900; color: #2563eb; display: block; line-height: 1;">0</span>
+                        <span style="font-size: 0.8rem; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">points</span>
+                    </div>
                 </div>
 
                 <!-- Public Visibility Field -->
@@ -124,6 +130,22 @@
         const contentInput = document.getElementById('content');
         const typeInput = document.getElementById('achievementType');
         const imageFileInput = document.getElementById('imageFile');
+        const levelInput = document.getElementById('level');
+        const pointsDisplay = document.getElementById('editPointsDisplay');
+
+        function updateEditPoints(val) {
+            let level = parseInt(val) || 0;
+            if (level > 20) {
+                level = 20;
+                levelInput.value = 20;
+            }
+            pointsDisplay.innerText = level * 10;
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            updateEditPoints(levelInput.value);
+        });
 
         function validatePostForm(event) {
             let errorMsg = "";

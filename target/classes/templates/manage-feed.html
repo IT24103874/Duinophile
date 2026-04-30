@@ -24,16 +24,32 @@
                             </div>
                             <h4 th:text="${post.title}" style="margin: 0; color: #111827; font-weight: 800; font-size: 1.35rem; line-height: 1.3;">Achievement Title</h4>
                         </div>
-                        <div style="display: flex; gap: 0.75rem;">
-                            <form th:action="@{/posts/approve/{id}(id=${post.id})}" method="post" style="margin: 0;">
-                                <button type="submit" style="background: #10b981; color: white; border: none; border-radius: 10px; padding: 0.65rem 1.5rem; font-weight: 700; cursor: pointer; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2); transition: transform 0.1s;"
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <form th:action="@{/posts/approve/{id}(id=${post.id})}" method="post" style="margin: 0; display: flex; align-items: center; gap: 1rem;">
+                                <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                    <label th:for="'level-' + ${post.id}" style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase;">Assign Level (0-20)</label>
+                                    <div style="display: flex; align-items: center; gap: 0.75rem; background: #f8fafc; padding: 0.25rem 0.75rem; border-radius: 12px; border: 1px solid #e2e8f0;">
+                                        <input type="number" 
+                                               name="level" 
+                                               th:id="'level-' + ${post.id}" 
+                                               min="0" max="20" value="0" 
+                                               style="width: 50px; border: none; background: transparent; font-weight: 800; color: var(--navy); outline: none;"
+                                               th:oninput="'updatePoints(\'' + ${post.id} + '\')'">
+                                        <div style="width: 1px; height: 20px; background: #e2e8f0;"></div>
+                                        <div style="display: flex; flex-direction: column;">
+                                            <span style="font-size: 0.65rem; font-weight: 700; color: #94a3b8; line-height: 1;">POINTS</span>
+                                            <span th:id="'points-' + ${post.id}" style="font-size: 0.9rem; font-weight: 800; color: #f97316;">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" style="background: #10b981; color: white; border: none; border-radius: 10px; padding: 0.65rem 1.5rem; font-weight: 700; cursor: pointer; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2); transition: transform 0.1s; align-self: flex-end;"
                                         onmouseover="this.style.opacity='0.9';" onmouseout="this.style.opacity='1';" onmousedown="this.style.transform='scale(0.96)';" onmouseup="this.style.transform='scale(1)';">
                                     ✅ Approve
                                 </button>
                             </form>
-                            <form th:action="@{/posts/delete/{id}(id=${post.id})}" method="post" style="margin:0;" onsubmit="confirmDelete(event, 'Permanently reject and delete this post?')">
+                            <form th:action="@{/posts/delete/{id}(id=${post.id})}" method="post" style="margin:0; align-self: flex-end;" onsubmit="confirmDelete(event, 'Permanently reject and delete this post?')">
                                 <button type="submit" style="background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; border-radius: 10px; padding: 0.65rem 1.25rem; font-weight: 700; cursor: pointer; font-size: 0.95rem; transition: all 0.2s;"
-                                        onmouseover="background:'#fecaca';">
+                                        onmouseover="this.style.background='#fecaca';" onmouseout="this.style.background='#fee2e2';">
                                     🗑️ Reject
                                 </button>
                             </form>
@@ -87,4 +103,13 @@
             transform: scale(1.01);
         }
     </style>
+
+    <script>
+        function updatePoints(postId) {
+            const levelInput = document.getElementById('level-' + postId);
+            const pointsDisplay = document.getElementById('points-' + postId);
+            const level = parseInt(levelInput.value) || 0;
+            pointsDisplay.innerText = level * 10;
+        }
+    </script>
 </div>

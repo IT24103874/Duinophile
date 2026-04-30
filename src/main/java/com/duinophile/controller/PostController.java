@@ -117,9 +117,11 @@ public class PostController {
     }
 
     @PostMapping("/approve/{id}")
-    public String approvePost(@PathVariable String id, @ModelAttribute("currentUser") CurrentUser currentUser) {
+    public String approvePost(@PathVariable String id, 
+                             @RequestParam(value = "level", required = false) Integer level,
+                             @ModelAttribute("currentUser") CurrentUser currentUser) {
         if (currentUser != null && ("ADMIN".equals(currentUser.role()) || "STAFF".equals(currentUser.role()))) {
-            postService.approvePost(id);
+            postService.approvePost(id, level);
         }
         return "redirect:/posts/manage";
     }

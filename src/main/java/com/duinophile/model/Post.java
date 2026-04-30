@@ -33,6 +33,8 @@ public class Post {
     @jakarta.validation.constraints.Max(value = 20, message = "Level cannot exceed 20")
     private Integer level;
 
+    private Integer points;
+
     private boolean publiclyVisible = true;
 
     private String authorId; // Reference to User id

@@ -90,6 +90,9 @@
                             <span th:if="${post.level != null}" 
                                   style="background: #ecfdf5; color: #059669; font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px; border: 1px solid #10b98140;"
                                   th:text="'LVL ' + ${post.level}">LVL</span>
+                            <span th:if="${post.points != null and post.points > 0}" 
+                                  style="background: #fff7ed; color: #c2410c; font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px; border: 1px solid #fdba74;"
+                                  th:text="${post.points} + ' PTS'">0 PTS</span>
                             <span th:if="${post.status == 'PENDING'}" style="background:#fff3e0; color:#e65100; font-size:0.72rem; font-weight:700; padding:0.2rem 0.6rem; border-radius:6px; border:1px solid #ffcc80;">⏳ Pending</span>
                             <span th:if="${!post.publiclyVisible}" style="background: #fffbeb; color: #d97706; font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px; border: 1px solid #fbbf2440;">🔒 PRIVATE</span>
                         </div>

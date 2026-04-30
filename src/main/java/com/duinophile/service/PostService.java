@@ -18,6 +18,11 @@ public class PostService {
     private PostRepository postRepository;
 
     public Post createPost(Post post) {
+        if ("APPROVED".equals(post.getStatus())) {
+            post.setPoints((post.getLevel() != null ? post.getLevel() : 0) * 10);
+        } else {
+            post.setPoints(0);
+        }
         return postRepository.save(post);
     }
 
@@ -36,9 +41,11 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    public void approvePost(String id) {
+    public void approvePost(String id, Integer level) {
         postRepository.findById(id).ifPresent(post -> {
             post.setStatus("APPROVED");
+            post.setLevel(level != null ? level : 0);
+            post.setPoints(post.getLevel() * 10);
             postRepository.save(post);
         });
     }
@@ -64,8 +71,12 @@ public class PostService {
         // If it's public, it needs admin moderation (PENDING).
         if (!post.isPubliclyVisible()) {
             post.setStatus("APPROVED");
+            post.setPoints((post.getLevel() != null ? post.getLevel() : 0) * 10);
         } else {
             post.setStatus("PENDING");
+            // Points remain 0 or whatever they were until re-approved? 
+            // Usually, if it goes back to PENDING, points should maybe be hidden or 0.
+            post.setPoints(0);
         }
 
         return postRepository.save(post);
