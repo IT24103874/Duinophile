@@ -141,7 +141,7 @@ public class AdminController {
                              RedirectAttributes ra) {
         if (!isAdmin(session)) return "redirect:/users/login";
 
-        userService.deleteUser(id);
+        userService.deleteUserAndData(id);
         ra.addFlashAttribute("success", "User deleted.");
         return "redirect:/admin/dashboard";
     }

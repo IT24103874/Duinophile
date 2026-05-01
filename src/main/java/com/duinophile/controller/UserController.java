@@ -114,7 +114,17 @@ public class UserController {
     @PostMapping("/update/{id}")
     public String updateUser(@PathVariable String id, @Valid @ModelAttribute("user") User user, BindingResult result,
             Model model) {
-        if (result.hasErrors()) {
+        
+        boolean hasActualErrors = false;
+        for (org.springframework.validation.FieldError error : result.getFieldErrors()) {
+            if ("password".equals(error.getField()) && (user.getPassword() == null || user.getPassword().isEmpty())) {
+                continue; // Ignore blank password error during profile update
+            }
+            hasActualErrors = true;
+            break;
+        }
+
+        if (hasActualErrors) {
             model.addAttribute("view", "edit-user");
             return "layout";
         }
@@ -124,8 +134,25 @@ public class UserController {
 
     @PostMapping("/delete/{id}")
     public String deleteUser(@PathVariable String id) {
-        userService.deleteUser(id);
+        userService.deleteUserAndData(id);
         return "redirect:/users/list";
+    }
+
+    @PostMapping("/delete-account")
+    public String deleteAccount(@RequestParam String confirmDeletePassword, HttpSession session, Model model) {
+        String userId = (String) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/users/login";
+        }
+        
+        com.duinophile.model.User user = userService.getUserById(userId).orElse(null);
+        if (user == null || !user.getPassword().equals(confirmDeletePassword)) {
+            return "redirect:/users/edit/" + userId + "?error=Incorrect%20password";
+        }
+        
+        userService.deleteUserAndData(userId);
+        session.invalidate();
+        return "redirect:/?message=Account%20successfully%20deleted";
     }
 
     @GetMapping("/forgot-password")

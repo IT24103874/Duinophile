@@ -1,8 +1,14 @@
 package com.duinophile.service;
 
 import com.duinophile.model.User;
+import com.duinophile.model.Post;
+import com.duinophile.model.Comment;
 import com.duinophile.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +19,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     public User registerUser(User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
@@ -68,7 +77,14 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void deleteUser(String id) {
+    public void deleteUserAndData(String id) {
+        // Anonymize user's posts and comments so they are not lost, but the user is removed
+        Query query = new Query(Criteria.where("authorId").is(id));
+        Update update = new Update().set("authorName", "[Deactivated Account]").set("authorId", null);
+        
+        mongoTemplate.updateMulti(query, update, Post.class);
+        mongoTemplate.updateMulti(query, update, Comment.class);
+        
         userRepository.deleteById(id);
     }
 
